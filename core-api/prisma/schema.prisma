@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Merchant {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  products  Product[]
+  policies  Policy[]
+  sessions  Session[]
+  auditLogs AuditLog[]
+
+  @@map("merchants")
+}
+
+model Product {
+  sku        String    @id
+  name       String
+  price      Int
+  stock      Int
+  category   String
+  active     Boolean   @default(true)
+  merchantId String    @map("merchant_id") @db.Uuid
+
+  merchant  Merchant   @relation(fields: [merchantId], references: [id])
+  auditLogs AuditLog[]
+
+  @@map("products")
+}
+
+model Policy {
+  id                  Int      @id @default(autoincrement())
+  maxOrderAmount      Int      @map("max_order_amount")
+  allowedSkus         String[] @map("allowed_skus")
+  maxOrdersPerSession Int      @default(1) @map("max_orders_per_session")
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at")
+  merchantId          String   @map("merchant_id") @db.Uuid
+
+  merchant Merchant @relation(fields: [merchantId], references: [id])
+
+  @@map("policies")
+}
+
+model Session {
+  sessionId    String     @id @map("session_id") @db.Uuid
+  ordersPlaced Int        @default(0) @map("orders_placed")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  merchantId   String     @map("merchant_id") @db.Uuid
+
+  merchant  Merchant   @relation(fields: [merchantId], references: [id])
+  auditLogs AuditLog[]
+
+  @@map("sessions")
+}
+
+model AuditLog {
+  id              Int      @id @default(autoincrement())
+  requestId       String   @map("request_id") @db.Uuid
+  sessionId       String?  @map("session_id") @db.Uuid
+  intentText      String   @map("intent_text")
+  matchedSku      String?  @map("matched_sku")
+  policyVerdict   String   @map("policy_verdict")
+  reason          String?
+  razorpayOrderId String?  @map("razorpay_order_id")
+  outcome         String
+  createdAt       DateTime @default(now()) @map("created_at")
+  merchantId      String   @map("merchant_id") @db.Uuid
+  idempotencyKey  String?  @unique @map("idempotency_key")
+
+  session  Session?  @relation(fields: [sessionId], references: [sessionId])
+  product  Product?  @relation(fields: [matchedSku], references: [sku])
+  merchant Merchant  @relation(fields: [merchantId], references: [id])
+
+  @@map("audit_log")
+}

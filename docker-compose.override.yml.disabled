@@ -1,0 +1,12 @@
+# Dev-only overrides: bind mounts for hot reload
+services:
+  core-api:
+    volumes:
+      - ./core-api/src:/app/src
+      - ./core-api/prisma:/app/prisma
+    command: ["npm", "run", "dev"]
+
+  agent-service:
+    volumes:
+      - ./agent-service/src:/app/src
+    command: ["npm", "run", "dev"]
