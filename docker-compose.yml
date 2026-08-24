@@ -21,6 +21,8 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/agent_checkout
       PORT: "4000"
+      JWT_SECRET: ${JWT_SECRET}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
     ports:
       - "4000:4000"
     depends_on:
@@ -29,14 +31,12 @@ services:
 
   agent-service:
     build: ./agent-service
-    # Deliberately NO env_file here — agent-service must never receive
-    # DATABASE_URL, RAZORPAY_KEY_ID, or RAZORPAY_KEY_SECRET.
-    # Only pass what it legitimately needs.
     environment:
       CORE_API_URL: http://core-api:4000
       PORT: "4100"
       GROQ_API_KEY: ${GROQ_API_KEY}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
     ports:
       - "4100:4100"
     depends_on:

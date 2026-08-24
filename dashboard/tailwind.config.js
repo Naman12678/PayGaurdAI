@@ -9,6 +9,9 @@ export default {
           dark: '#0D1117',
         },
       },
+      fontFamily: {
+        display: ['Inter', 'sans-serif'],
+      }
     },
   },
   plugins: [],
