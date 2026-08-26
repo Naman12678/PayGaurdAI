@@ -37,7 +37,7 @@ export default function AuditTrail() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Audit Trail</h1>
+        <h1 className="text-2xl font-display font-semibold text-text">Audit Trail</h1>
         <div className="flex items-center gap-3">
           <input
             type="text"
@@ -46,11 +46,11 @@ export default function AuditTrail() {
             onChange={(e) => setSessionFilter(e.target.value)}
             className="input w-72 text-xs"
           />
-          <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
             <input
               type="checkbox" checked={autoRefresh}
               onChange={(e) => setAutoRefresh(e.target.checked)}
-              className="rounded border-gray-600 bg-gray-800"
+              className="rounded border-ink-line2 bg-ink-raised"
             />
             Auto-refresh
           </label>
@@ -59,16 +59,16 @@ export default function AuditTrail() {
       </div>
 
       {error && (
-        <div className="card border-red-800 bg-red-900/20 text-red-300 text-sm">{error}</div>
+        <div className="card border-block/40 bg-block-dim/20 text-block text-sm">{error}</div>
       )}
 
       <div className="card p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-800 bg-gray-900">
+              <tr className="border-b border-ink-line bg-ink-raised">
                 {HEADERS.map((h) => (
-                  <th key={h} className="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+                  <th key={h} className="py-3 px-4 text-left text-xs font-mono font-medium text-text-faint uppercase tracking-wide">
                     {h}
                   </th>
                 ))}
@@ -77,13 +77,13 @@ export default function AuditTrail() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={HEADERS.length} className="py-8 text-center text-gray-500">
+                  <td colSpan={HEADERS.length} className="py-8 text-center text-text-faint">
                     Loading…
                   </td>
                 </tr>
               ) : entries.length === 0 ? (
                 <tr>
-                  <td colSpan={HEADERS.length} className="py-8 text-center text-gray-500">
+                  <td colSpan={HEADERS.length} className="py-8 text-center text-text-faint">
                     No audit records yet. Send a checkout request to get started.
                   </td>
                 </tr>
@@ -94,7 +94,7 @@ export default function AuditTrail() {
           </table>
         </div>
         {entries.length > 0 && (
-          <div className="border-t border-gray-800 px-4 py-2 text-xs text-gray-500">
+          <div className="border-t border-ink-line px-4 py-2 text-xs text-text-faint font-mono">
             Showing {entries.length} most recent entries
           </div>
         )}

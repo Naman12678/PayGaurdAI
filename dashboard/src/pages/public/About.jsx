@@ -25,12 +25,11 @@ export default function About() {
 
         <h2>The architecture</h2>
         <p>
-          Two backend services enforce this split. <code className="text-gray-300 font-mono text-sm">agent-service</code> runs
+          Two backend services enforce this split. <code className="text-text font-mono text-sm">agent-service</code> runs
           the LangGraph orchestration and calls Groq (with Gemini as a fallback) to interpret intent.
-          <code className="text-gray-300 font-mono text-sm"> core-api</code> owns PostgreSQL, the Razorpay
+          <code className="text-text font-mono text-sm"> core-api</code> owns PostgreSQL, the Razorpay
           integration, the policy engine, and the audit log — and is the only thing either of them
-          can touch. A service-to-service token, separate from user authentication, is required for
-          agent-service to call core-api at all.
+          can touch. Only core-api ever holds a database credential or a Razorpay key.
         </p>
         <ul>
           <li>Every checkout attempt — passed, blocked, or failed — writes exactly one audit row.</li>

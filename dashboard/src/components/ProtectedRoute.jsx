@@ -15,8 +15,8 @@ export default function ProtectedRoute({ children }) {
 
   if (!checked) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950">
-        <div className="text-gray-500 text-sm">Checking session…</div>
+      <div className="min-h-screen flex items-center justify-center bg-ink">
+        <div className="text-text-faint text-sm font-mono">Checking session…</div>
       </div>
     );
   }

@@ -10,12 +10,18 @@ const LINKS = [
 function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2 shrink-0">
-      <svg width="24" height="24" viewBox="0 0 32 32" className="shrink-0">
-        <rect width="32" height="32" rx="8" fill="#0D1117" />
-        <rect x="8" y="8" width="16" height="16" rx="4" fill="none" stroke="#2E6FF2" strokeWidth="2.5" />
-        <path d="M12.5 16.5l2.5 2.5 4.5-5" fill="none" stroke="#2E6FF2" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <svg width="26" height="26" viewBox="0 0 32 32" className="shrink-0">
+        <rect width="32" height="32" rx="7" fill="#12151D" stroke="#242A38" />
+        <path
+          d="M8 20V12a1 1 0 0 1 1-1h9.5a3.5 3.5 0 0 1 0 7H12v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1Z"
+          fill="none"
+          stroke="#7089FF"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <circle cx="22.5" cy="9.5" r="2.5" fill="#16C98D" />
       </svg>
-      <span className="font-display font-semibold text-white tracking-tight">PayGuard AI</span>
+      <span className="font-display font-semibold text-text tracking-tight">PayGuard AI</span>
     </Link>
   );
 }
@@ -25,8 +31,8 @@ export default function PublicLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950 text-gray-100">
-      <header className="border-b border-gray-800 sticky top-0 bg-gray-950/90 backdrop-blur z-20">
+    <div className="min-h-screen flex flex-col bg-ink text-text">
+      <header className="border-b border-ink-line sticky top-0 bg-ink/90 backdrop-blur z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Logo />
 
@@ -56,7 +62,7 @@ export default function PublicLayout() {
           </div>
 
           <button
-            className="md:hidden text-gray-400 p-1"
+            className="md:hidden text-text-muted p-1"
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle menu"
             aria-expanded={open}
@@ -72,13 +78,13 @@ export default function PublicLayout() {
         </div>
 
         {open && (
-          <div className="md:hidden border-t border-gray-800 px-4 py-3 flex flex-col gap-3">
+          <div className="md:hidden border-t border-ink-line px-4 py-3 flex flex-col gap-3">
             {LINKS.map((l) => (
               <NavLink key={l.to} to={l.to} className="nav-link" onClick={() => setOpen(false)}>
                 {l.label}
               </NavLink>
             ))}
-            <div className="h-px bg-gray-800 my-1" />
+            <div className="h-px bg-ink-line my-1" />
             {isAuthenticated ? (
               <Link to="/app/audit" className="btn-primary text-sm text-center" onClick={() => setOpen(false)}>
                 Go to dashboard
@@ -101,10 +107,10 @@ export default function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-gray-800">
+      <footer className="border-t border-ink-line">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row gap-6 sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 text-gray-500 text-sm">
-            <span className="font-display font-medium text-gray-300">PayGuard AI</span>
+          <div className="flex items-center gap-2 text-text-faint text-sm">
+            <span className="font-display font-medium text-text-muted">PayGuard AI</span>
             <span aria-hidden="true">·</span>
             <span>Built for the Razorpay AI Buildathon</span>
           </div>
@@ -122,8 +128,8 @@ export default function PublicLayout() {
             </a>
           </div>
         </div>
-        <div className="border-t border-gray-900 py-3 text-center text-xs text-gray-600">
-          Track 01: AI Growth &amp; Agentic Commerce · Razorpay test mode only · No real transactions
+        <div className="border-t border-ink-line py-3 text-center text-xs text-text-faint font-mono">
+          Track 01 · AI Growth &amp; Agentic Commerce · Razorpay test mode only · No real transactions
         </div>
       </footer>
     </div>

@@ -3,9 +3,9 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const NAV = [
-  { to: '/app/checkout', label: 'Checkout Demo' },
-  { to: '/app/audit',    label: 'Audit Trail'   },
-  { to: '/app/policy',   label: 'Policy Config' },
+  { to: '/app/checkout', label: 'Checkout demo' },
+  { to: '/app/audit',    label: 'Audit trail'   },
+  { to: '/app/policy',   label: 'Policy config' },
   { to: '/app/catalog',  label: 'Catalog'       },
 ];
 
@@ -21,12 +21,15 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900">
+      <header className="border-b border-ink-line bg-ink-raised">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 shrink-0">
-            <Link to="/" className="text-xl font-display font-bold text-white">PayGuard AI</Link>
-            <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded hidden sm:inline">
-              Razorpay AI Buildathon
+            <Link to="/" className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-pass shrink-0" aria-hidden="true" />
+              <span className="text-lg font-display font-semibold text-text tracking-tight">PayGuard AI</span>
+            </Link>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-text-faint bg-ink px-2 py-0.5 rounded hidden sm:inline border border-ink-line">
+              Test mode
             </span>
           </div>
 
@@ -38,8 +41,8 @@ export default function Layout() {
                 className={({ isActive }) =>
                   `px-3 py-1.5 text-sm rounded-lg transition-colors whitespace-nowrap ${
                     isActive
-                      ? 'bg-razorpay-blue text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                      ? 'bg-signal text-white'
+                      : 'text-text-muted hover:text-text hover:bg-ink-line'
                   }`
                 }
               >
@@ -50,11 +53,11 @@ export default function Layout() {
 
           <div className="flex items-center gap-3 shrink-0">
             {merchant && (
-              <span className="text-xs text-gray-500 hidden md:inline">{merchant.name}</span>
+              <span className="text-xs text-text-faint hidden md:inline">{merchant.name}</span>
             )}
             <button
               onClick={handleLogout}
-              className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-600 rounded-lg px-3 py-1.5 transition-colors"
+              className="text-xs text-text-muted hover:text-text border border-ink-line hover:border-ink-line2 rounded-lg px-3 py-1.5 transition-colors"
             >
               Sign out
             </button>
@@ -67,8 +70,8 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-gray-800 py-3 text-center text-xs text-gray-600">
-        Track 01: AI Growth &amp; Agentic Commerce · Test mode only · No real transactions
+      <footer className="border-t border-ink-line py-3 text-center text-xs text-text-faint font-mono">
+        Track 01 · AI Growth &amp; Agentic Commerce · Test mode only · No real transactions
       </footer>
     </div>
   );

@@ -7,7 +7,7 @@ export default function Privacy() {
       <h1 className="text-3xl sm:text-4xl font-display font-semibold text-white mb-3">
         Privacy policy
       </h1>
-      <p className="text-gray-500 text-sm mb-10">
+      <p className="text-text-faint text-sm mb-10">
         This is a buildathon demo project, not a commercial product. This page describes, plainly,
         what the running application actually stores and does — it is not a legal document.
       </p>

@@ -38,7 +38,7 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Max Order Amount (₹)</label>
+          <label className="block text-sm text-text-muted mb-1">Max Order Amount (₹)</label>
           <input
             type="number" min="1" value={maxAmount}
             onChange={(e) => setMaxAmount(e.target.value)}
@@ -46,7 +46,7 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
           />
         </div>
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Max Orders per Session</label>
+          <label className="block text-sm text-text-muted mb-1">Max Orders per Session</label>
           <input
             type="number" min="1" value={maxPerSession}
             onChange={(e) => setMaxPerSession(e.target.value)}
@@ -56,7 +56,7 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
       </div>
 
       <div>
-        <label className="block text-sm text-gray-400 mb-2">Allowed SKUs</label>
+        <label className="block text-sm text-text-muted mb-2">Allowed SKUs</label>
         <div className="grid grid-cols-3 gap-2">
           {allSkus.map((sku) => (
             <label key={sku} className="flex items-center gap-2 text-sm cursor-pointer">
@@ -64,18 +64,18 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
                 type="checkbox"
                 checked={allowedSkus.has(sku)}
                 onChange={() => toggleSku(sku)}
-                className="rounded border-gray-600 bg-gray-800"
+                className="rounded border-ink-line2 bg-ink-raised"
               />
-              <span className="font-mono text-gray-300">{sku}</span>
+              <span className="font-mono text-text">{sku}</span>
             </label>
           ))}
         </div>
       </div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+      {error && <p className="text-block text-sm">{error}</p>}
 
       <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50">
-        {saving ? 'Saving…' : 'Save Policy'}
+        {saving ? 'Saving…' : 'Save policy'}
       </button>
     </form>
   );

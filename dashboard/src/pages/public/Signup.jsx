@@ -37,15 +37,15 @@ export default function Signup() {
     <div className="section grid lg:grid-cols-2 gap-16 items-center !py-20">
       <div className="max-w-sm mx-auto w-full order-2 lg:order-1">
         <p className="eyebrow mb-2">Create account</p>
-        <h1 className="text-3xl font-display font-semibold text-white mb-2">Get started</h1>
-        <p className="text-gray-400 text-sm mb-8">
+        <h1 className="text-3xl font-display font-semibold text-text mb-2">Get started</h1>
+        <p className="text-text-muted text-sm mb-8">
           Creates a merchant account scoped to its own catalog, policy, and audit trail — isolated
           from every other account.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-xs text-gray-400 mb-1.5">Name</label>
+            <label htmlFor="name" className="block text-xs text-text-muted mb-1.5">Name</label>
             <input
               id="name"
               type="text"
@@ -58,7 +58,7 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-xs text-gray-400 mb-1.5">Email</label>
+            <label htmlFor="email" className="block text-xs text-text-muted mb-1.5">Email</label>
             <input
               id="email"
               type="email"
@@ -71,7 +71,7 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-xs text-gray-400 mb-1.5">Password</label>
+            <label htmlFor="password" className="block text-xs text-text-muted mb-1.5">Password</label>
             <input
               id="password"
               type="password"
@@ -88,7 +88,7 @@ export default function Signup() {
           </div>
 
           {error && (
-            <div className="text-sm text-red-400 bg-red-900/20 border border-red-800 rounded-lg px-3 py-2">
+            <div className="text-sm text-block bg-block-dim/30 border border-block/40 rounded-lg px-3 py-2">
               {error}
             </div>
           )}
@@ -98,9 +98,9 @@ export default function Signup() {
           </button>
         </form>
 
-        <p className="text-sm text-gray-500 mt-6">
+        <p className="text-sm text-text-faint mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-razorpay-blue hover:underline">
+          <Link to="/login" className="text-signal-bright hover:underline">
             Sign in
           </Link>
         </p>

@@ -4,31 +4,59 @@
 
 @layer base {
   body {
-    @apply bg-gray-950 text-gray-100 font-sans;
+    @apply bg-ink text-text font-sans;
   }
 }
 
 @layer base {
   h1, h2, h3, h4 { @apply font-display; }
-  :focus-visible { @apply outline-none ring-2 ring-razorpay-blue ring-offset-2 ring-offset-gray-950; }
+  :focus-visible { @apply outline-none ring-2 ring-signal ring-offset-2 ring-offset-ink; }
+  ::selection { background-color: #4E6BFF44; }
 }
 
 @layer components {
-  .badge-success  { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-900 text-green-300; }
-  .badge-blocked  { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-900 text-red-300; }
-  .badge-failed   { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-900 text-yellow-300; }
-  .badge-no_match { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-700 text-gray-300; }
-  .card           { @apply bg-gray-900 border border-gray-800 rounded-xl p-6; }
-  .btn-primary    { @apply bg-razorpay-blue hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors; }
-  .btn-secondary  { @apply bg-gray-800 hover:bg-gray-700 text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors border border-gray-700; }
-  .input          { @apply bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-razorpay-blue; }
+  /* Verdict badges — small inline pills used in tables/lists */
+  .badge-success  { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pass-dim text-pass; }
+  .badge-blocked  { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-block-dim text-block; }
+  .badge-failed   { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-retry-dim text-retry; }
+  .badge-no_match { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ink-line text-text-muted; }
+
+  /* Signature element: a "ledger stamp" — every verdict in the product is a
+     stamped, mono-set, slightly rotated mark, echoing the audit_log's job of
+     literally stamping every request with an outcome. Reused in the hero,
+     the checkout demo, and the audit trail. */
+  .stamp {
+    @apply inline-flex items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.12em] px-3 py-1 rounded-sm border-2;
+    transform: rotate(-2deg);
+  }
+  .stamp-pass  { @apply stamp border-pass text-pass bg-pass-dim/60; }
+  .stamp-block { @apply stamp border-block text-block bg-block-dim/60; }
+  .stamp-retry { @apply stamp border-retry text-retry bg-retry-dim/60; }
+
+  .card           { @apply bg-ink-surface border border-ink-line rounded-xl p-6; }
+  .card-raised    { @apply bg-ink-raised border border-ink-line rounded-xl p-6; }
+  .btn-primary    { @apply bg-signal hover:bg-signal-bright text-white font-medium py-2 px-4 rounded-lg transition-colors; }
+  .btn-secondary  { @apply bg-ink-raised hover:bg-ink-line text-text font-medium py-2 px-4 rounded-lg transition-colors border border-ink-line; }
+  .input          { @apply bg-ink-raised border border-ink-line rounded-lg px-3 py-2 text-sm text-text placeholder-text-faint focus:outline-none focus:ring-2 focus:ring-signal; }
 
   /* Marketing / public-site utilities */
-  .eyebrow        { @apply text-xs font-semibold tracking-[0.14em] uppercase text-razorpay-blue; }
+  .eyebrow        { @apply text-xs font-mono font-medium tracking-[0.18em] uppercase text-signal-bright; }
   .section        { @apply max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24; }
   .section-tight  { @apply max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24; }
-  .nav-link       { @apply text-sm text-gray-400 hover:text-white transition-colors; }
-  .prose-public p { @apply text-gray-400 leading-relaxed mb-4; }
-  .prose-public h2 { @apply text-xl font-semibold text-white mt-10 mb-3; }
-  .prose-public ul { @apply list-disc list-inside text-gray-400 space-y-1.5 mb-4; }
+  .nav-link       { @apply text-sm text-text-muted hover:text-text transition-colors; }
+  .prose-public p { @apply text-text-muted leading-relaxed mb-4; }
+  .prose-public h2 { @apply text-xl font-semibold text-text mt-10 mb-3; }
+  .prose-public ul { @apply list-disc list-inside text-text-muted space-y-1.5 mb-4; }
+
+  /* Ledger rail — a thin ruled margin used behind the hero and section
+     dividers, standing in for a physical audit ledger's page edge. */
+  .ledger-rail {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 27px,
+      #1B2030 27px,
+      #1B2030 28px
+    );
+  }
 }

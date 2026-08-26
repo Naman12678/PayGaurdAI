@@ -5,6 +5,7 @@ const { z }   = require('zod');
 const prisma  = require('../config/db');
 const { jwtSecret } = require('../config/env');
 const { requireAuth } = require('../middleware/requireAuth');
+const { buildStarterCatalog } = require('../data/starterCatalog');
 
 const router = express.Router();
 
@@ -47,6 +48,17 @@ router.post('/auth/register', async (req, res, next) => {
       data: { email, passwordHash, name },
       select: { id: true, email: true, name: true, createdAt: true },
     });
+
+    // Give the new merchant a working catalog + policy immediately, so the
+    // checkout agent has something to match against on their very first try.
+    // Without this, every account except the seeded demo one starts with an
+    // empty catalog and the agent will (correctly) report "no product found"
+    // no matter what's asked for.
+    const { products, policy } = buildStarterCatalog(merchant.id);
+    await prisma.$transaction([
+      prisma.product.createMany({ data: products }),
+      prisma.policy.create({ data: policy }),
+    ]);
 
     const token = jwt.sign(
       { merchantId: merchant.id, email: merchant.email },

@@ -49,16 +49,16 @@ export default function Landing() {
   return (
     <>
       {/* Hero */}
-      <section className="section !pt-14 sm:!pt-20">
+      <section className="section !pt-14 sm:!pt-20 relative">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="eyebrow mb-4">For AI-driven commerce</p>
-            <h1 className="text-4xl sm:text-5xl font-display font-semibold text-white leading-[1.1] tracking-tight mb-5">
+            <p className="eyebrow mb-4">For agent-driven commerce</p>
+            <h1 className="text-4xl sm:text-5xl font-display font-semibold text-text leading-[1.1] tracking-tight mb-5">
               Let AI agents shop for your store.
               <br />
               Never let them touch the money.
             </h1>
-            <p className="text-gray-400 text-lg leading-relaxed mb-8 max-w-lg">
+            <p className="text-text-muted text-lg leading-relaxed mb-8 max-w-lg">
               PayGuard AI sits between any buyer agent and your Razorpay account. A deterministic
               policy gate checks every order before a rupee moves — the LLM only ever gets a
               verdict back.
@@ -80,41 +80,41 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="section border-t border-gray-900">
+      <section className="section border-t border-ink-line">
         <p className="eyebrow mb-3">How it works</p>
-        <h2 className="text-2xl sm:text-3xl font-display font-semibold text-white mb-12 max-w-xl">
+        <h2 className="text-2xl sm:text-3xl font-display font-semibold text-text mb-12 max-w-xl">
           Three deterministic steps between a request and a rupee moving.
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
           {STEPS.map((s) => (
             <div key={s.n}>
-              <div className="font-display text-3xl text-gray-700 mb-3">{s.n}</div>
-              <h3 className="text-white font-semibold mb-2">{s.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{s.body}</p>
+              <div className="font-display font-mono text-3xl text-signal-dim mb-3">{s.n}</div>
+              <h3 className="text-text font-semibold mb-2">{s.title}</h3>
+              <p className="text-text-muted text-sm leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Comparison */}
-      <section className="section border-t border-gray-900">
+      <section className="section border-t border-ink-line">
         <p className="eyebrow mb-3">Why a gate, not a prompt</p>
-        <h2 className="text-2xl sm:text-3xl font-display font-semibold text-white mb-12 max-w-xl">
+        <h2 className="text-2xl sm:text-3xl font-display font-semibold text-text mb-12 max-w-xl">
           Most agent-checkout demos trust the model. This one doesn&apos;t have to.
         </h2>
 
         <div className="card !p-0 overflow-hidden">
           <div className="grid grid-cols-3 text-sm">
-            <div className="p-4 border-b border-gray-800 text-gray-500 font-medium"></div>
-            <div className="p-4 border-b border-gray-800 border-l border-gray-800 text-gray-500 font-medium">Prompt-only</div>
-            <div className="p-4 border-b border-gray-800 border-l border-gray-800 text-razorpay-blue font-medium">PayGuard AI</div>
+            <div className="p-4 border-b border-ink-line"></div>
+            <div className="p-4 border-b border-ink-line border-l border-ink-line text-text-faint font-medium font-mono text-xs uppercase tracking-wide">Prompt-only</div>
+            <div className="p-4 border-b border-ink-line border-l border-ink-line text-signal-bright font-medium font-mono text-xs uppercase tracking-wide">PayGuard AI</div>
             {COMPARE.map((row) => (
               <React.Fragment key={row.label}>
-                <div className="p-4 border-b border-gray-800 text-gray-300 text-sm">{row.label}</div>
-                <div className="p-4 border-b border-gray-800 border-l border-gray-800 text-gray-500 text-sm">
+                <div className="p-4 border-b border-ink-line text-text text-sm">{row.label}</div>
+                <div className="p-4 border-b border-ink-line border-l border-ink-line text-text-faint text-sm">
                   {row.risky}
                 </div>
-                <div className="p-4 border-b border-gray-800 border-l border-gray-800 text-green-300 text-sm">
+                <div className="p-4 border-b border-ink-line border-l border-ink-line text-pass text-sm">
                   {row.safe}
                 </div>
               </React.Fragment>
@@ -124,17 +124,17 @@ export default function Landing() {
       </section>
 
       {/* Stack + buildathon */}
-      <section className="section border-t border-gray-900">
+      <section className="section border-t border-ink-line">
         <div className="card flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 justify-between">
           <div>
             <p className="eyebrow mb-2">Built for</p>
-            <h3 className="text-white font-display font-semibold text-lg">
+            <h3 className="text-text font-display font-semibold text-lg">
               Razorpay AI Buildathon — Track 01: Agentic Commerce
             </h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {STACK.map((t) => (
-              <span key={t} className="text-xs font-mono text-gray-400 bg-gray-800 border border-gray-700 rounded-full px-3 py-1">
+              <span key={t} className="text-xs font-mono text-text-muted bg-ink border border-ink-line rounded-full px-3 py-1">
                 {t}
               </span>
             ))}
@@ -143,20 +143,20 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="section-tight border-t border-gray-900 text-center">
-        <h2 className="text-2xl sm:text-3xl font-display font-semibold text-white mb-4">
+      <section className="section-tight border-t border-ink-line text-center">
+        <h2 className="text-2xl sm:text-3xl font-display font-semibold text-text mb-4">
           Wire it up in an afternoon.
         </h2>
-        <p className="text-gray-400 mb-8">
-          Test-mode Razorpay, a seeded demo catalog, and a working policy gate — ready to try
-          without touching production.
+        <p className="text-text-muted mb-8">
+          Test-mode Razorpay, a starter catalog seeded on signup, and a working policy gate —
+          ready to try without touching production.
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link to="/signup" className="btn-primary">
             Create an account
           </Link>
           <Link to="/resources" className="btn-secondary">
-            Read the docs
+            Read more
           </Link>
         </div>
       </section>

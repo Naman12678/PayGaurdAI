@@ -15,7 +15,7 @@ function OutcomeBadge({ outcome }) {
 }
 
 function VerdictBadge({ verdict }) {
-  if (!verdict || verdict === 'n/a') return <span className="text-gray-500 text-xs">—</span>;
+  if (!verdict || verdict === 'n/a') return <span className="text-text-faint text-xs">—</span>;
   return (
     <span className={verdict === 'pass' ? 'badge-success' : 'badge-blocked'}>
       {verdict}
@@ -32,20 +32,20 @@ export default function AuditRow({ entry }) {
   const ts = new Date(createdAt).toLocaleString();
 
   return (
-    <tr className="border-b border-gray-800 hover:bg-gray-800/40 transition-colors">
-      <td className="py-3 px-4 text-xs text-gray-500 font-mono">{ts}</td>
-      <td className="py-3 px-4 text-sm max-w-xs truncate" title={intentText}>{intentText}</td>
-      <td className="py-3 px-4 text-xs font-mono text-gray-300">
-        {matchedSku || <span className="text-gray-600">—</span>}
-        {product && <div className="text-gray-500 text-xs">{product.name}</div>}
+    <tr className="border-b border-ink-line hover:bg-ink-line/30 transition-colors">
+      <td className="py-3 px-4 text-xs text-text-faint font-mono">{ts}</td>
+      <td className="py-3 px-4 text-sm max-w-xs truncate text-text" title={intentText}>{intentText}</td>
+      <td className="py-3 px-4 text-xs font-mono text-text-muted">
+        {matchedSku || <span className="text-text-faint">—</span>}
+        {product && <div className="text-text-faint text-xs">{product.name}</div>}
       </td>
       <td className="py-3 px-4"><VerdictBadge verdict={policyVerdict} /></td>
-      <td className="py-3 px-4 text-xs text-gray-400 max-w-xs truncate" title={reason}>{reason || '—'}</td>
-      <td className="py-3 px-4 text-xs font-mono text-gray-400 truncate">
-        {razorpayOrderId || <span className="text-gray-600">—</span>}
+      <td className="py-3 px-4 text-xs text-text-muted max-w-xs truncate" title={reason}>{reason || '—'}</td>
+      <td className="py-3 px-4 text-xs font-mono text-text-muted truncate">
+        {razorpayOrderId || <span className="text-text-faint">—</span>}
       </td>
       <td className="py-3 px-4"><OutcomeBadge outcome={outcome} /></td>
-      <td className="py-3 px-4 text-xs font-mono text-gray-600 truncate"
+      <td className="py-3 px-4 text-xs font-mono text-text-faint truncate"
           title={requestId}>{requestId?.slice(0, 8)}…</td>
     </tr>
   );

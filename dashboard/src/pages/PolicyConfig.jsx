@@ -32,29 +32,29 @@ export default function PolicyConfig() {
 
   return (
     <div className="space-y-4 max-w-2xl">
-      <h1 className="text-2xl font-bold">Policy Configuration</h1>
-      <p className="text-sm text-gray-400">
+      <h1 className="text-2xl font-display font-semibold text-text">Policy config</h1>
+      <p className="text-sm text-text-muted">
         Spend limits and SKU allow-lists are enforced as deterministic code in core-api.
         Changes take effect on the next request.
       </p>
 
       {error && (
-        <div className="card border-red-800 bg-red-900/20 text-red-300 text-sm">{error}</div>
+        <div className="card border-block/40 bg-block-dim/20 text-block text-sm">{error}</div>
       )}
       {saved && (
-        <div className="card border-green-800 bg-green-900/20 text-green-300 text-sm">
+        <div className="card border-pass/40 bg-pass-dim/20 text-pass text-sm">
           Policy saved successfully.
         </div>
       )}
 
       {loading ? (
-        <div className="text-gray-500">Loading policy…</div>
+        <div className="text-text-faint">Loading policy…</div>
       ) : policy ? (
         <div className="card">
           <PolicyForm policy={policy} allSkus={skus} onSaved={handleSaved} />
         </div>
       ) : (
-        <div className="text-gray-500">No policy configured.</div>
+        <div className="text-text-faint">No policy configured.</div>
       )}
     </div>
   );
