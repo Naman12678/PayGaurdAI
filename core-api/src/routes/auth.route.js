@@ -44,26 +44,30 @@ router.post('/auth/register', async (req, res, next) => {
     }
 
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const merchant = await prisma.merchant.create({
-      data: { email, passwordHash, name },
-      select: { id: true, email: true, name: true, createdAt: true },
-    });
 
-    // Give the new merchant a working catalog + policy immediately, so the
-    // checkout agent has something to match against on their very first try.
-    // Without this, every account except the seeded demo one starts with an
-    // empty catalog and the agent will (correctly) report "no product found"
-    // no matter what's asked for.
-    const { products, policy } = buildStarterCatalog(merchant.id);
-    await prisma.$transaction([
-      prisma.product.createMany({ data: products }),
-      prisma.policy.create({ data: policy }),
-    ]);
+    // Everything below is one atomic transaction: the merchant row, its
+    // starter catalog, and its policy either all commit together or none do.
+    // (Previously merchant.create ran outside the transaction, so a failure
+    // in the catalog/policy seeding left a permanently broken merchant row —
+    // no products, no policy, and no way to retry since the email was
+    // already taken.)
+    const merchant = await prisma.$transaction(async (tx) => {
+      const created = await tx.merchant.create({
+        data: { email, passwordHash, name },
+        select: { id: true, email: true, name: true, createdAt: true },
+      });
+
+      const { products, policy } = buildStarterCatalog(created.id);
+      await tx.product.createMany({ data: products });
+      await tx.policy.create({ data: policy });
+
+      return created;
+    });
 
     const token = jwt.sign(
       { merchantId: merchant.id, email: merchant.email },
       jwtSecret,
-      { expiresIn: JWT_EXPIRY }
+      { expiresIn: JWT_EXPIRY, algorithm: 'HS256' }
     );
 
     res.status(201).json({ token, merchant });
@@ -100,7 +104,7 @@ router.post('/auth/login', async (req, res, next) => {
     const token = jwt.sign(
       { merchantId: merchant.id, email: merchant.email },
       jwtSecret,
-      { expiresIn: JWT_EXPIRY }
+      { expiresIn: JWT_EXPIRY, algorithm: 'HS256' }
     );
 
     res.json({

@@ -40,6 +40,7 @@ model Product {
 model Policy {
   id                  Int      @id @default(autoincrement())
   maxOrderAmount      Int      @map("max_order_amount")
+  maxSessionSpend     Int      @default(8000) @map("max_session_spend")
   allowedSkus         String[] @map("allowed_skus")
   maxOrdersPerSession Int      @default(1) @map("max_orders_per_session")
   updatedAt           DateTime @default(now()) @updatedAt @map("updated_at")
@@ -53,6 +54,7 @@ model Policy {
 model Session {
   sessionId    String     @id @map("session_id") @db.Uuid
   ordersPlaced Int        @default(0) @map("orders_placed")
+  totalSpent   Int        @default(0) @map("total_spent")
   createdAt    DateTime   @default(now()) @map("created_at")
   merchantId   String     @map("merchant_id") @db.Uuid
 

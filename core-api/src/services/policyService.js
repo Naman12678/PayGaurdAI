@@ -50,6 +50,19 @@ async function checkPolicy(order) {
     };
   }
 
+  // Rule 4: Max cumulative spend per session — this is the aggregate
+  // backstop the per-order cap can't provide on its own. Without it, a
+  // session could place maxOrdersPerSession orders each just under
+  // maxOrderAmount with no ceiling on their sum.
+  const spentSoFar = session ? session.totalSpent : 0;
+  const projectedSpend = spentSoFar + totalAmount;
+  if (projectedSpend > policy.maxSessionSpend) {
+    return {
+      verdict: 'block', rule: 'max_session_spend',
+      reason: `This order would bring session spend to ${projectedSpend}, exceeding the session cap of ${policy.maxSessionSpend}.`,
+    };
+  }
+
   return { verdict: 'pass', rule: null, reason: null };
 }
 
@@ -70,6 +83,7 @@ async function updatePolicy(data, merchantId) {
       where: { id: existing.id },
       data: {
         maxOrderAmount:      data.maxOrderAmount,
+        maxSessionSpend:     data.maxSessionSpend,
         allowedSkus:         data.allowedSkus,
         maxOrdersPerSession: data.maxOrdersPerSession,
       },

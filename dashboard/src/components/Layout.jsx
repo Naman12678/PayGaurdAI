@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 
 const NAV = [
   { to: '/app/checkout', label: 'Checkout demo' },
@@ -52,6 +53,7 @@ export default function Layout() {
           </nav>
 
           <div className="flex items-center gap-3 shrink-0">
+            <ThemeToggle />
             {merchant && (
               <span className="text-xs text-text-faint hidden md:inline">{merchant.name}</span>
             )}

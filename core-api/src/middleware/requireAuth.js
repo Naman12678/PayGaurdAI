@@ -19,7 +19,11 @@ function requireAuth(req, res, next) {
   }
 
   try {
-    const payload = jwt.verify(token, jwtSecret);
+    // Pin the accepted algorithm explicitly. jsonwebtoken's verify() will
+    // trust whatever `alg` the token header claims unless told otherwise —
+    // pinning HS256 closes the classic "algorithm confusion" attack where a
+    // token is re-signed with a different (attacker-controlled) algorithm.
+    const payload = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] });
     req.merchantId = payload.merchantId;
     req.merchantEmail = payload.email;
     next();

@@ -4,7 +4,7 @@ export default function Privacy() {
   return (
     <div className="section-tight">
       <p className="eyebrow mb-3">Privacy</p>
-      <h1 className="text-3xl sm:text-4xl font-display font-semibold text-white mb-3">
+      <h1 className="text-3xl sm:text-4xl font-display font-semibold text-text mb-3">
         Privacy policy
       </h1>
       <p className="text-text-faint text-sm mb-10">

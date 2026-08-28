@@ -30,6 +30,7 @@ const products = [
 
 const defaultPolicy = {
   maxOrderAmount: 4000,
+  maxSessionSpend: 8000,
   allowedSkus: [
     'MOU-001','KBD-001','USB-001','CAB-001','BAG-001',
     'WEB-001','SPK-001','HDN-001','PAD-001',

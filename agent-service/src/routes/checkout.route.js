@@ -53,7 +53,7 @@ router.post('/checkout', async (req, res, next) => {
       : 200;
 
     res.status(status).json({
-      sessionId,
+      sessionId: sid,
       requestId,
       outcome:         finalState.outcome  || 'error',
       message:         finalState.message  || finalState.error || 'An unexpected error occurred.',

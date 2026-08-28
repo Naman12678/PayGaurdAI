@@ -25,6 +25,7 @@ const matchSchema = z.object({
   query:      z.string().min(1).max(500),
   sessionId:  z.string().uuid().optional(),
   merchantId: z.string().uuid(),
+  intentText: z.string().min(1).max(1000).optional(),
 });
 
 const policyCheckSchema = z.object({
@@ -33,6 +34,15 @@ const policyCheckSchema = z.object({
   sessionId:  z.string().uuid(),
   quantity:   z.number().int().positive().default(1),
   merchantId: z.string().uuid(),
+  intentText: z.string().min(1).max(1000).optional(),
+});
+
+const auditLogSchema = z.object({
+  sessionId:  z.string().uuid().optional(),
+  merchantId: z.string().uuid(),
+  intentText: z.string().min(1).max(1000),
+  outcome:    z.enum(['no_match', 'blocked', 'failed']),
+  reason:     z.string().max(1000).optional(),
 });
 
 const createOrderSchema = z.object({
@@ -45,4 +55,4 @@ const createOrderSchema = z.object({
   idempotencyKey:  z.string().max(128).optional(),
 });
 
-module.exports = { validate, matchSchema, policyCheckSchema, createOrderSchema };
+module.exports = { validate, matchSchema, policyCheckSchema, createOrderSchema, auditLogSchema };

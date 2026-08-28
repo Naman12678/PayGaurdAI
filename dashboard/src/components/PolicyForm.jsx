@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { updatePolicy } from '../api/coreApiClient.js';
 
 export default function PolicyForm({ policy, allSkus, onSaved }) {
-  const [maxAmount, setMaxAmount]         = useState(policy.maxOrderAmount);
-  const [maxPerSession, setMaxPerSession] = useState(policy.maxOrdersPerSession);
-  const [allowedSkus, setAllowedSkus]     = useState(new Set(policy.allowedSkus));
-  const [saving, setSaving]               = useState(false);
-  const [error, setError]                 = useState(null);
+  const [maxAmount, setMaxAmount]             = useState(policy.maxOrderAmount);
+  const [maxSessionSpend, setMaxSessionSpend] = useState(policy.maxSessionSpend);
+  const [maxPerSession, setMaxPerSession]     = useState(policy.maxOrdersPerSession);
+  const [allowedSkus, setAllowedSkus]         = useState(new Set(policy.allowedSkus));
+  const [saving, setSaving]                   = useState(false);
+  const [error, setError]                     = useState(null);
 
   function toggleSku(sku) {
     setAllowedSkus((prev) => {
@@ -23,6 +24,7 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
     try {
       await updatePolicy({
         maxOrderAmount: Number(maxAmount),
+        maxSessionSpend: Number(maxSessionSpend),
         maxOrdersPerSession: Number(maxPerSession),
         allowedSkus: Array.from(allowedSkus),
       });
@@ -36,9 +38,9 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm text-text-muted mb-1">Max Order Amount (₹)</label>
+          <label className="block text-sm text-text-muted mb-1">Max order amount (₹)</label>
           <input
             type="number" min="1" value={maxAmount}
             onChange={(e) => setMaxAmount(e.target.value)}
@@ -46,7 +48,16 @@ export default function PolicyForm({ policy, allSkus, onSaved }) {
           />
         </div>
         <div>
-          <label className="block text-sm text-text-muted mb-1">Max Orders per Session</label>
+          <label className="block text-sm text-text-muted mb-1">Max session spend (₹)</label>
+          <input
+            type="number" min="1" value={maxSessionSpend}
+            onChange={(e) => setMaxSessionSpend(e.target.value)}
+            className="input w-full"
+          />
+          <p className="text-xs text-text-faint mt-1">Total across every order in one session — the aggregate cap.</p>
+        </div>
+        <div>
+          <label className="block text-sm text-text-muted mb-1">Max orders per session</label>
           <input
             type="number" min="1" value={maxPerSession}
             onChange={(e) => setMaxPerSession(e.target.value)}

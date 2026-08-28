@@ -9,7 +9,7 @@ export default function Resources() {
   return (
     <div className="section">
       <p className="eyebrow mb-3">Resources</p>
-      <h1 className="text-3xl sm:text-4xl font-display font-semibold text-white mb-4">
+      <h1 className="text-3xl sm:text-4xl font-display font-semibold text-text mb-4">
         Resources
       </h1>
       <p className="text-text-muted max-w-2xl mb-12">
@@ -27,7 +27,7 @@ export default function Resources() {
             className="card hover:border-signal/50 transition-colors flex items-center justify-between"
           >
             <div>
-              <div className="text-white font-medium text-sm">{l.label}</div>
+              <div className="text-text font-medium text-sm">{l.label}</div>
               <div className="text-text-faint text-xs mt-0.5">{l.note}</div>
             </div>
             <span className="text-text-faint">↗</span>

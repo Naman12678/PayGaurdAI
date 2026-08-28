@@ -4,7 +4,7 @@ export default function About() {
   return (
     <div className="section-tight">
       <p className="eyebrow mb-3">About</p>
-      <h1 className="text-3xl sm:text-4xl font-display font-semibold text-white mb-8">
+      <h1 className="text-3xl sm:text-4xl font-display font-semibold text-text mb-8">
         Why PayGuard AI exists
       </h1>
 

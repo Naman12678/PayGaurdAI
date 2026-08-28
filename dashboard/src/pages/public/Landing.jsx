@@ -48,33 +48,46 @@ const STACK = ['Node.js + Express', 'LangGraph.js', 'Groq / Gemini', 'PostgreSQL
 export default function Landing() {
   return (
     <>
-      {/* Hero */}
-      <section className="section !pt-14 sm:!pt-20 relative">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="eyebrow mb-4">For agent-driven commerce</p>
-            <h1 className="text-4xl sm:text-5xl font-display font-semibold text-text leading-[1.1] tracking-tight mb-5">
-              Let AI agents shop for your store.
-              <br />
-              Never let them touch the money.
-            </h1>
-            <p className="text-text-muted text-lg leading-relaxed mb-8 max-w-lg">
-              PayGuard AI sits between any buyer agent and your Razorpay account. A deterministic
-              policy gate checks every order before a rupee moves — the LLM only ever gets a
-              verdict back.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/signup" className="btn-primary">
-                Get started free
-              </Link>
-              <Link to="/resources" className="btn-secondary">
-                See how it works
-              </Link>
-            </div>
-          </div>
+      {/* Hero — full-bleed backdrop spans the whole viewport width; the
+          content column inside stays reading-width and centered. */}
+      <section className="relative overflow-hidden w-full">
+        {/* decorative color blobs — signal blue + agent violet, slow drift.
+            Positioned against the full-width section, not the inner content
+            column, so the color treatment actually reaches the screen edges
+            instead of being boxed into the centered max-w-6xl column. */}
+        <div className="blob w-[28rem] h-[28rem] bg-signal/20 -top-32 -left-32 animate-float" aria-hidden="true" />
+        <div className="blob w-96 h-96 bg-agent/20 top-10 -right-20 animate-float-slow" aria-hidden="true" />
+        <div className="blob w-80 h-80 bg-pass/10 bottom-0 left-1/4 animate-float" aria-hidden="true" />
 
-          <div className="flex justify-center lg:justify-end">
-            <GateAnimation />
+        <div className="section !pt-14 sm:!pt-20 relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="animate-fade-up">
+              <p className="eyebrow mb-4">For agent-driven commerce</p>
+              <h1 className="text-4xl sm:text-5xl font-display font-semibold text-text leading-[1.1] tracking-tight mb-5">
+                Let AI agents shop for your store.
+                <br />
+                <span className="bg-gradient-to-r from-signal-bright to-agent-bright bg-clip-text text-transparent">
+                  Never let them touch the money.
+                </span>
+              </h1>
+              <p className="text-text-muted text-lg leading-relaxed mb-8 max-w-lg">
+                PayGuard AI sits between any buyer agent and your Razorpay account. A deterministic
+                policy gate checks every order before a rupee moves — the LLM only ever gets a
+                verdict back.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/signup" className="btn-primary">
+                  Get started free
+                </Link>
+                <Link to="/resources" className="btn-secondary">
+                  See how it works
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex justify-center lg:justify-end animate-fade-up delay-200">
+              <GateAnimation />
+            </div>
           </div>
         </div>
       </section>
@@ -86,9 +99,11 @@ export default function Landing() {
           Three deterministic steps between a request and a rupee moving.
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
-          {STEPS.map((s) => (
-            <div key={s.n}>
-              <div className="font-display font-mono text-3xl text-signal-dim mb-3">{s.n}</div>
+          {STEPS.map((s, i) => (
+            <div key={s.n} className="animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+              <div className="font-display font-mono text-3xl bg-gradient-to-br from-signal-bright to-agent-bright bg-clip-text text-transparent mb-3">
+                {s.n}
+              </div>
               <h3 className="text-text font-semibold mb-2">{s.title}</h3>
               <p className="text-text-muted text-sm leading-relaxed">{s.body}</p>
             </div>
@@ -103,7 +118,7 @@ export default function Landing() {
           Most agent-checkout demos trust the model. This one doesn&apos;t have to.
         </h2>
 
-        <div className="card !p-0 overflow-hidden">
+        <div className="card card-hover !p-0 overflow-hidden">
           <div className="grid grid-cols-3 text-sm">
             <div className="p-4 border-b border-ink-line"></div>
             <div className="p-4 border-b border-ink-line border-l border-ink-line text-text-faint font-medium font-mono text-xs uppercase tracking-wide">Prompt-only</div>
@@ -125,7 +140,7 @@ export default function Landing() {
 
       {/* Stack + buildathon */}
       <section className="section border-t border-ink-line">
-        <div className="card flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 justify-between">
+        <div className="card card-hover flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 justify-between">
           <div>
             <p className="eyebrow mb-2">Built for</p>
             <h3 className="text-text font-display font-semibold text-lg">

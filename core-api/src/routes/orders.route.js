@@ -1,11 +1,12 @@
 const express = require('express');
 const { validate, createOrderSchema } = require('../utils/validators');
 const { requireServiceToken } = require('../middleware/requireServiceToken');
+const { internalLimiter } = require('../middleware/rateLimiters');
 const { checkPolicy } = require('../services/policyService');
 const { createOrder } = require('../services/razorpayService');
 const { incrementOrderCount, ensureSession } = require('../services/sessionService');
 const { writeAuditLog, getAuditLog } = require('../services/auditService');
-const { getProductBySku } = require('../services/catalogService');
+const { getProductBySku, decrementStock } = require('../services/catalogService');
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ const router = express.Router();
  *  5. Session counter increment (on success only)
  *  6. Exactly one audit_log row written
  */
-router.post('/orders', requireServiceToken, validate(createOrderSchema), async (req, res, next) => {
+router.post('/orders', requireServiceToken, internalLimiter, validate(createOrderSchema), async (req, res, next) => {
   const { sku, quantity, amount, sessionId, intentText, merchantId, idempotencyKey } = req.body;
   // Always use the server-generated requestId — never trust the client's
   const requestId = req.requestId;
@@ -80,16 +81,28 @@ router.post('/orders', requireServiceToken, validate(createOrderSchema), async (
     }
 
     // ── 5. Call Razorpay (single retry inside razorpayService) ───────────────
-    const amountPaise = amount * quantity * 100;
+    const totalAmount = amount * quantity; // rupees — matches policy cap units
+    const amountPaise = totalAmount * 100;
     const razorpayResult = await createOrder({
       amount:  amountPaise,
       receipt: `rcpt_${requestId.replace(/-/g, '').slice(0, 20)}`,
       notes:   { sku, quantity: String(quantity), sessionId, merchantId },
     });
 
-    // ── 6. Increment session counter on success only ─────────────────────────
+    // ── 6. On success only: increment session counters and take stock off
+    //       the shelf. Both are best-effort after payment already succeeded —
+    //       in this demo's scope we don't attempt a compensating refund if
+    //       the stock guard trips here (it was already checked in step 4).
     if (razorpayResult.outcome === 'success') {
-      await incrementOrderCount(sessionId, merchantId);
+      await incrementOrderCount(sessionId, merchantId, totalAmount);
+      const stockOk = await decrementStock(sku, quantity, merchantId);
+      if (!stockOk) {
+        // Someone else took the last unit between the step-4 check and now.
+        // The charge already succeeded, so we still report success but flag
+        // it in the audit trail rather than pretending nothing happened.
+        razorpayResult.reason = (razorpayResult.reason ? `${razorpayResult.reason}; ` : '')
+          + 'Stock went negative at fulfillment time — reconcile manually.';
+      }
     }
 
     // ── 7. Write exactly one audit row ───────────────────────────────────────

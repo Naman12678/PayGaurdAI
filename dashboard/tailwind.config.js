@@ -1,46 +1,64 @@
 /** @type {import('tailwindcss').Config} */
+function themeColor(varName) {
+  return `rgb(var(${varName}) / <alpha-value>)`;
+}
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Ink scale — a navy-charcoal base rather than a neutral gray-950,
-        // so the app has its own identity instead of the default Tailwind dark.
         ink: {
-          DEFAULT: '#090B10',
-          raised: '#12151D',
-          surface: '#161A24',
-          line: '#242A38',
-          line2: '#31384A',
+          DEFAULT: themeColor('--c-ink'),
+          raised:  themeColor('--c-ink-raised'),
+          surface: themeColor('--c-ink-surface'),
+          line:    themeColor('--c-ink-line'),
+          line2:   themeColor('--c-ink-line2'),
         },
         text: {
-          DEFAULT: '#EDEFF3',
-          muted: '#8890A2',
-          faint: '#5C6478',
+          DEFAULT: themeColor('--c-text'),
+          muted:   themeColor('--c-text-muted'),
+          faint:   themeColor('--c-text-faint'),
         },
-        // Primary signal — an indigo-blue, close cousin of Razorpay's brand
-        // blue but tuned so it doesn't read as a stock Tailwind color.
+        // Primary signal — the "money/gate" accent.
         signal: {
-          DEFAULT: '#4E6BFF',
-          bright: '#7089FF',
-          dim: '#2E3E99',
+          DEFAULT: themeColor('--c-signal'),
+          bright:  themeColor('--c-signal-bright'),
+          dim:     themeColor('--c-signal-dim'),
         },
-        // Verdict palette — the vocabulary the whole product speaks in
-        // (pass / block / retry), reused for badges, stamps, and status dots.
-        pass: { DEFAULT: '#16C98D', dim: '#0E3D30' },
-        block: { DEFAULT: '#FF5C72', dim: '#3D1620' },
-        retry: { DEFAULT: '#F5B400', dim: '#3D2E06' },
-        // Kept for any leftover references during the transition.
-        razorpay: { blue: '#4E6BFF', dark: '#090B10' },
+        // Secondary accent — the "agent/LLM" side of the architecture,
+        // reused wherever the buyer agent or agent-service shows up visually
+        // so the two-container split reads as two colors, not just prose.
+        agent: {
+          DEFAULT: themeColor('--c-agent'),
+          bright:  themeColor('--c-agent-bright'),
+          dim:     themeColor('--c-agent-dim'),
+        },
+        pass:  { DEFAULT: themeColor('--c-pass'),  dim: themeColor('--c-pass-dim') },
+        block: { DEFAULT: themeColor('--c-block'), dim: themeColor('--c-block-dim') },
+        retry: { DEFAULT: themeColor('--c-retry'), dim: themeColor('--c-retry-dim') },
       },
       fontFamily: {
         display: ['"Space Grotesk"', 'sans-serif'],
         sans: ['Inter', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
-      backgroundImage: {
-        'grid-fade':
-          'linear-gradient(to bottom, transparent, #090B10 92%), repeating-linear-gradient(0deg, transparent, transparent 39px, #1B2030 39px, #1B2030 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, #1B2030 39px, #1B2030 40px)',
+      keyframes: {
+        'fade-up':   { '0%': { opacity: 0, transform: 'translateY(14px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+        'fade-in':   { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+        'pop':       { '0%': { transform: 'scale(0.6)', opacity: 0 }, '60%': { transform: 'scale(1.08)', opacity: 1 }, '100%': { transform: 'scale(1)' } },
+        'float':     { '0%, 100%': { transform: 'translate(0, 0)' }, '50%': { transform: 'translate(10px, -14px)' } },
+        'float-slow':{ '0%, 100%': { transform: 'translate(0, 0)' }, '50%': { transform: 'translate(-16px, 12px)' } },
+        'drift':     { '0%': { transform: 'rotate(0deg)' }, '100%': { transform: 'rotate(360deg)' } },
+      },
+      animation: {
+        'fade-up': 'fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-in': 'fade-in 0.5s ease both',
+        'pop':     'pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'float':      'float 7s ease-in-out infinite',
+        'float-slow': 'float-slow 9s ease-in-out infinite',
+        'drift':      'drift 40s linear infinite',
       },
     },
   },

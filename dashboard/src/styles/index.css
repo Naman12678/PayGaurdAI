@@ -2,16 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ────────────────────────────────────────────────────────────────────────
+   Theme tokens — RGB triples (not hex) so Tailwind's opacity modifiers
+   (bg-pass-dim/60 etc.) keep working across both themes. :root is dark
+   (this product's native register — test-mode fintech, ledger-at-night);
+   html.light overrides for the light theme. "dim" keeps the same semantic
+   role in both — a toned-down background for badges/stamps — it's just a
+   dark saturated tint in dark mode and a pale tint in light mode.
+   ──────────────────────────────────────────────────────────────────────── */
+:root {
+  --c-ink:          9 11 16;
+  --c-ink-raised:   18 21 29;
+  --c-ink-surface:  22 26 36;
+  --c-ink-line:     36 42 56;
+  --c-ink-line2:    49 56 74;
+
+  --c-text:       237 239 243;
+  --c-text-muted: 136 144 162;
+  --c-text-faint:  92 100 120;
+
+  --c-signal:        78 107 255;
+  --c-signal-bright: 112 137 255;
+  --c-signal-dim:    46 62 153;
+
+  --c-agent:        139 107 255;
+  --c-agent-bright: 168 143 255;
+  --c-agent-dim:     36  28  77;
+
+  --c-pass:     22 201 141;
+  --c-pass-dim: 14  61  48;
+
+  --c-block:     255 92 114;
+  --c-block-dim:  61 22  32;
+
+  --c-retry:     245 180   0;
+  --c-retry-dim:  61  46   6;
+}
+
+html.light {
+  --c-ink:          243 245 250;
+  --c-ink-raised:   255 255 255;
+  --c-ink-surface:  255 255 255;
+  --c-ink-line:     226 229 237;
+  --c-ink-line2:    203 208 220;
+
+  --c-text:        18  21  29;
+  --c-text-muted:  91  98 115;
+  --c-text-faint: 155 161 176;
+
+  --c-signal:        51  85 255;
+  --c-signal-bright: 88 119 255;
+  --c-signal-dim:   221 227 255;
+
+  --c-agent:        124  77 255;
+  --c-agent-bright: 150 110 255;
+  --c-agent-dim:    238 231 255;
+
+  --c-pass:      14 159 110;
+  --c-pass-dim: 223 247 236;
+
+  --c-block:      225  29  72;
+  --c-block-dim:  253 226 232;
+
+  --c-retry:      180  83   9;
+  --c-retry-dim:  254 243 217;
+}
+
 @layer base {
+  html { color-scheme: dark; width: 100%; overflow-x: hidden; }
+  html.light { color-scheme: light; }
+
   body {
     @apply bg-ink text-text font-sans;
+    width: 100%;
+    min-height: 100vh;
+    transition: background-color 0.35s ease, color 0.35s ease;
   }
 }
 
 @layer base {
   h1, h2, h3, h4 { @apply font-display; }
   :focus-visible { @apply outline-none ring-2 ring-signal ring-offset-2 ring-offset-ink; }
-  ::selection { background-color: #4E6BFF44; }
+  ::selection { background-color: rgb(var(--c-signal) / 0.3); }
+
+  * { transition-property: background-color, border-color, color, fill, stroke; transition-duration: 0.2s; }
 }
 
 @layer components {
@@ -22,9 +96,7 @@
   .badge-no_match { @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-ink-line text-text-muted; }
 
   /* Signature element: a "ledger stamp" — every verdict in the product is a
-     stamped, mono-set, slightly rotated mark, echoing the audit_log's job of
-     literally stamping every request with an outcome. Reused in the hero,
-     the checkout demo, and the audit trail. */
+     stamped, mono-set, slightly rotated mark. */
   .stamp {
     @apply inline-flex items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.12em] px-3 py-1 rounded-sm border-2;
     transform: rotate(-2deg);
@@ -32,12 +104,28 @@
   .stamp-pass  { @apply stamp border-pass text-pass bg-pass-dim/60; }
   .stamp-block { @apply stamp border-block text-block bg-block-dim/60; }
   .stamp-retry { @apply stamp border-retry text-retry bg-retry-dim/60; }
+  .stamp-agent { @apply stamp border-agent text-agent bg-agent-dim/60; }
 
-  .card           { @apply bg-ink-surface border border-ink-line rounded-xl p-6; }
+  .card {
+    @apply bg-ink-surface border border-ink-line rounded-xl p-6 transition-all duration-300;
+  }
+  .card-hover {
+    @apply hover:-translate-y-0.5 hover:border-ink-line2 hover:shadow-xl hover:shadow-black/20;
+  }
   .card-raised    { @apply bg-ink-raised border border-ink-line rounded-xl p-6; }
-  .btn-primary    { @apply bg-signal hover:bg-signal-bright text-white font-medium py-2 px-4 rounded-lg transition-colors; }
-  .btn-secondary  { @apply bg-ink-raised hover:bg-ink-line text-text font-medium py-2 px-4 rounded-lg transition-colors border border-ink-line; }
-  .input          { @apply bg-ink-raised border border-ink-line rounded-lg px-3 py-2 text-sm text-text placeholder-text-faint focus:outline-none focus:ring-2 focus:ring-signal; }
+
+  .btn-primary {
+    @apply bg-signal hover:bg-signal-bright text-white font-medium py-2 px-4 rounded-lg
+           transition-all duration-200 active:scale-[0.97] shadow-lg shadow-signal/20 hover:shadow-signal/30;
+  }
+  .btn-secondary {
+    @apply bg-ink-raised hover:bg-ink-line text-text font-medium py-2 px-4 rounded-lg
+           transition-all duration-200 active:scale-[0.97] border border-ink-line;
+  }
+  .input {
+    @apply bg-ink-raised border border-ink-line rounded-lg px-3 py-2 text-sm text-text placeholder-text-faint
+           transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal;
+  }
 
   /* Marketing / public-site utilities */
   .eyebrow        { @apply text-xs font-mono font-medium tracking-[0.18em] uppercase text-signal-bright; }
@@ -48,15 +136,25 @@
   .prose-public h2 { @apply text-xl font-semibold text-text mt-10 mb-3; }
   .prose-public ul { @apply list-disc list-inside text-text-muted space-y-1.5 mb-4; }
 
-  /* Ledger rail — a thin ruled margin used behind the hero and section
-     dividers, standing in for a physical audit ledger's page edge. */
   .ledger-rail {
     background-image: repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 27px,
-      #1B2030 27px,
-      #1B2030 28px
+      to bottom, transparent, transparent 27px,
+      rgb(var(--c-ink-line) / 0.6) 27px, rgb(var(--c-ink-line) / 0.6) 28px
     );
   }
+
+  /* Soft blurred color blobs used as decorative background texture — the
+     "multiple colors" accent layer, kept behind everything and out of the
+     way of text contrast. */
+  .blob {
+    @apply absolute rounded-full blur-3xl pointer-events-none;
+  }
+}
+
+@layer utilities {
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
 }

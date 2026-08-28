@@ -49,6 +49,7 @@ function buildStarterCatalog(merchantId) {
 
   const policy = {
     maxOrderAmount: 4000,
+    maxSessionSpend: 8000,
     allowedSkus: products
       .filter((p) => p.sku.slice(0, 3) !== 'MON' && p.sku.slice(0, 3) !== 'SSD') // keep two SKUs blocked out of the box, mirrors the demo policy's intent
       .map((p) => p.sku),

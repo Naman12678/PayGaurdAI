@@ -58,4 +58,19 @@ async function getProductBySku(sku, merchantId) {
   });
 }
 
-module.exports = { getAllActiveProducts, findBestMatch, getProductBySku };
+/**
+ * Atomically decrements stock for a successful order. Guarded by a
+ * `stock >= quantity` WHERE clause so two concurrent orders can never push
+ * stock negative — if the guard fails to match a row, `count` is 0 and the
+ * caller knows the decrement didn't happen (someone else took the last unit
+ * between the pre-charge stock check and this call).
+ */
+async function decrementStock(sku, quantity, merchantId) {
+  const result = await prisma.product.updateMany({
+    where: { sku, merchantId, stock: { gte: quantity } },
+    data:  { stock: { decrement: quantity } },
+  });
+  return result.count > 0;
+}
+
+module.exports = { getAllActiveProducts, findBestMatch, getProductBySku, decrementStock };

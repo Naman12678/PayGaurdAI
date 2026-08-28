@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 
 const LINKS = [
   { to: '/about', label: 'About' },
@@ -45,6 +46,7 @@ export default function PublicLayout() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             {isAuthenticated ? (
               <Link to="/app/audit" className="btn-primary text-sm !py-1.5">
                 Go to dashboard
@@ -85,6 +87,10 @@ export default function PublicLayout() {
               </NavLink>
             ))}
             <div className="h-px bg-ink-line my-1" />
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-text-muted">Theme</span>
+              <ThemeToggle />
+            </div>
             {isAuthenticated ? (
               <Link to="/app/audit" className="btn-primary text-sm text-center" onClick={() => setOpen(false)}>
                 Go to dashboard

@@ -14,12 +14,13 @@ export async function checkoutAgentNode(state) {
   // ── Policy check (deterministic — no LLM) ─────────────────────────────────
   let policyResult;
   try {
-    policyResult = await checkPolicy({ sku, amount, sessionId, quantity, merchantId });
+    policyResult = await checkPolicy({ sku, amount, sessionId, quantity, merchantId, intentText });
   } catch (err) {
     return { ...state, error: `Policy check failed: ${err.message}`, stage: 'error' };
   }
 
   if (policyResult.verdict === 'block') {
+    // /policy/check already wrote the audit row for this outcome.
     return {
       ...state,
       policyVerdict: 'block',

@@ -49,7 +49,7 @@ export default function CatalogPreview() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {items.map((p) => (
-                <div key={p.sku} className="card hover:border-ink-line2 transition-colors">
+                <div key={p.sku} className="card card-hover">
                   <div className="flex justify-between items-start mb-2">
                     <span className="font-mono text-xs text-text-faint">{p.sku}</span>
                     <StockPill stock={p.stock} />

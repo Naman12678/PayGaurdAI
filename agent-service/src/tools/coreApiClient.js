@@ -40,16 +40,16 @@ async function post(path, body, requestId) {
  * Resolves a natural-language query to the best matching product.
  * merchantId is required so core-api scopes the lookup to the right catalog.
  */
-export async function matchProduct(query, sessionId, merchantId) {
-  const { data } = await post('/match', { query, sessionId, merchantId });
+export async function matchProduct(query, sessionId, merchantId, intentText) {
+  const { data } = await post('/match', { query, sessionId, merchantId, intentText });
   return data;
 }
 
 /**
  * Checks a proposed order against the merchant's spend policy.
  */
-export async function checkPolicy({ sku, amount, sessionId, quantity = 1, merchantId }) {
-  const { data } = await post('/policy/check', { sku, amount, sessionId, quantity, merchantId });
+export async function checkPolicy({ sku, amount, sessionId, quantity = 1, merchantId, intentText }) {
+  const { data } = await post('/policy/check', { sku, amount, sessionId, quantity, merchantId, intentText });
   return data;
 }
 
@@ -63,5 +63,17 @@ export async function placeOrder({ sku, quantity, amount, sessionId, requestId, 
     { sku, quantity, amount, sessionId, intentText, merchantId, idempotencyKey },
     requestId
   );
+  return data;
+}
+
+/**
+ * Writes a terminal audit-log row directly, for the one case that never
+ * reaches /match or /policy/check at all: the LLM failing to parse intent
+ * with usable confidence. Without this call, that request would vanish
+ * with no audit trail entry — the only gap in the "log every request"
+ * guarantee that a downstream core-api call can't close on its own.
+ */
+export async function logAudit({ sessionId, merchantId, intentText, outcome, reason }, requestId) {
+  const { data } = await post('/audit/log', { sessionId, merchantId, intentText, outcome, reason }, requestId);
   return data;
 }

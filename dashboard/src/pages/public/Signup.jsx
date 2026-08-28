@@ -83,7 +83,7 @@ export default function Signup() {
               placeholder="At least 8 characters"
             />
             {passwordTooShort && (
-              <p className="text-xs text-yellow-500 mt-1">Needs at least 8 characters.</p>
+              <p className="text-xs text-retry mt-1">Needs at least 8 characters.</p>
             )}
           </div>
 

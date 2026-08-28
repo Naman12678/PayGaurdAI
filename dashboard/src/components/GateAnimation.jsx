@@ -50,8 +50,8 @@ export default function GateAnimation() {
       <div className={`relative flex items-center justify-between gap-2 sm:gap-4 transition-opacity duration-300 ${fading ? 'opacity-0' : 'opacity-100'}`}>
         {/* Agent */}
         <div className="flex-1 min-w-0">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-text-faint mb-1.5">Buyer agent</div>
-          <div className="bg-ink border border-ink-line rounded-lg px-3 py-2.5 text-xs text-text leading-snug h-16 flex items-center">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-agent mb-1.5">Buyer agent</div>
+          <div className="bg-ink border border-agent/30 rounded-lg px-3 py-2.5 text-xs text-text leading-snug h-16 flex items-center">
             {s.intent}
           </div>
         </div>
@@ -65,7 +65,8 @@ export default function GateAnimation() {
         <div className="shrink-0 text-center">
           <div className="text-[10px] font-mono uppercase tracking-wider text-text-faint mb-1.5">Policy gate</div>
           <div
-            className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 flex items-center justify-center transition-colors duration-300 ${
+            key={index}
+            className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 flex items-center justify-center transition-colors duration-300 animate-pop ${
               pass ? 'border-pass bg-pass-dim/40' : 'border-block bg-block-dim/40'
             }`}
           >
