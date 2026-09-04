@@ -1,6 +1,7 @@
 const express = require('express');
 const { validate, policyCheckSchema, auditLogSchema } = require('../utils/validators');
 const { requireAuth } = require('../middleware/requireAuth');
+const { requireAdmin } = require('../middleware/requireAdmin');
 const { requireServiceToken } = require('../middleware/requireServiceToken');
 const { internalLimiter } = require('../middleware/rateLimiters');
 const { checkPolicy, getCurrentPolicy, updatePolicy } = require('../services/policyService');
@@ -88,8 +89,11 @@ router.get('/policy', requireAuth, async (req, res, next) => {
 
 /**
  * PUT /policy  — merchant dashboard update
+ * Admin-only: policy changes set the actual spend boundaries an agent can
+ * transact within, so this requires the admin role, not just any
+ * authenticated session on the account.
  */
-router.put('/policy', requireAuth, async (req, res, next) => {
+router.put('/policy', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     const { maxOrderAmount, maxSessionSpend, allowedSkus, maxOrdersPerSession } = req.body;
     if (

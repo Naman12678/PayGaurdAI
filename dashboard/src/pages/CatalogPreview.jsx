@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchCatalog } from '../api/coreApiClient.js';
+import { fetchCatalog, restockProduct } from '../api/coreApiClient.js';
 
 function formatPrice(p) {
   return `₹${p.toLocaleString('en-IN')}`;
@@ -9,6 +9,61 @@ function StockPill({ stock }) {
   if (stock === 0) return <span className="badge-blocked">Out of stock</span>;
   if (stock <= 5)  return <span className="badge-failed">{stock} left</span>;
   return <span className="badge-success">{stock} in stock</span>;
+}
+
+function RestockControl({ product, onRestocked }) {
+  const [draft, setDraft]   = useState(String(product.stock));
+  const [saving, setSaving] = useState(false);
+  const [error, setError]   = useState(null);
+
+  useEffect(() => { setDraft(String(product.stock)); }, [product.stock]);
+
+  const dirty = Number(draft) !== product.stock && draft !== '';
+
+  async function save(newStock) {
+    if (!Number.isInteger(newStock) || newStock < 0) {
+      setError('Enter a whole number ≥ 0');
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      const updated = await restockProduct(product.sku, newStock);
+      onRestocked(updated);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="mt-3 pt-3 border-t border-ink-line">
+      <div className="flex items-center gap-2">
+        <input
+          type="number" min="0" value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          disabled={saving}
+          className="input !py-1 !px-2 w-20 text-sm"
+        />
+        <button
+          onClick={() => save(Number(draft))}
+          disabled={saving || !dirty}
+          className="btn-secondary !py-1 !px-2 text-xs disabled:opacity-40"
+        >
+          {saving ? 'Saving…' : 'Save'}
+        </button>
+        <button
+          onClick={() => save(product.stock + 10)}
+          disabled={saving}
+          className="btn-secondary !py-1 !px-2 text-xs disabled:opacity-40 ml-auto"
+        >
+          +10
+        </button>
+      </div>
+      {error && <p className="text-block text-xs mt-1.5">{error}</p>}
+    </div>
+  );
 }
 
 export default function CatalogPreview() {
@@ -22,6 +77,10 @@ export default function CatalogPreview() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  function handleRestocked(updated) {
+    setProducts((prev) => prev.map((p) => (p.sku === updated.sku ? updated : p)));
+  }
 
   const byCategory = products.reduce((acc, p) => {
     (acc[p.category] = acc[p.category] || []).push(p);
@@ -56,6 +115,7 @@ export default function CatalogPreview() {
                   </div>
                   <p className="text-sm font-medium text-text mb-1">{p.name}</p>
                   <p className="text-lg font-display font-semibold text-signal-bright">{formatPrice(p.price)}</p>
+                  <RestockControl product={p} onRestocked={handleRestocked} />
                 </div>
               ))}
             </div>

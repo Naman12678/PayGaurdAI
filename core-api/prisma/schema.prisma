@@ -12,6 +12,13 @@ model Merchant {
   email        String    @unique
   passwordHash String    @map("password_hash")
   name         String
+  // Every merchant is the sole owner of their own store today, so this
+  // defaults every existing and new account to 'admin' — behavior is
+  // unchanged for anyone using the app as-is. It exists so admin-only
+  // operations (currently: policy changes) have a real enforcement point
+  // now, ahead of a future staff/invite model where not every authenticated
+  // user of an account should be able to loosen spend limits.
+  role         String    @default("admin")
   createdAt    DateTime  @default(now()) @map("created_at")
 
   products  Product[]

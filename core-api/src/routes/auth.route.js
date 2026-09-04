@@ -54,7 +54,7 @@ router.post('/auth/register', async (req, res, next) => {
     const merchant = await prisma.$transaction(async (tx) => {
       const created = await tx.merchant.create({
         data: { email, passwordHash, name },
-        select: { id: true, email: true, name: true, createdAt: true },
+        select: { id: true, email: true, name: true, role: true, createdAt: true },
       });
 
       const { products, policy } = buildStarterCatalog(created.id);
@@ -109,7 +109,7 @@ router.post('/auth/login', async (req, res, next) => {
 
     res.json({
       token,
-      merchant: { id: merchant.id, email: merchant.email, name: merchant.name, createdAt: merchant.createdAt },
+      merchant: { id: merchant.id, email: merchant.email, name: merchant.name, role: merchant.role, createdAt: merchant.createdAt },
     });
   } catch (err) {
     next(err);
@@ -121,7 +121,7 @@ router.get('/auth/me', requireAuth, async (req, res, next) => {
   try {
     const merchant = await prisma.merchant.findUnique({
       where: { id: req.merchantId },
-      select: { id: true, email: true, name: true, createdAt: true },
+      select: { id: true, email: true, name: true, role: true, createdAt: true },
     });
     if (!merchant) {
       const err = new Error('Merchant not found.');

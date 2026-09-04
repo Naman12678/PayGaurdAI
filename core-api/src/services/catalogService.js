@@ -10,38 +10,57 @@ async function getAllActiveProducts(merchantId) {
   });
 }
 
+// A match needs at least this much signal to count. Below this, treat it
+// as no match rather than guessing — a weak partial match is worse than an
+// honest "we don't carry that," since it can silently substitute the wrong
+// product for what the buyer actually asked for.
+const MINIMUM_SCORE = 30;
+
 /**
  * Finds the single best product match for a plain-text search query,
  * scoped to the authenticated merchant's catalog.
  * Only considers active products with stock > 0.
- * Returns null when nothing matches.
+ * Returns null when nothing matches with enough confidence.
  */
 async function findBestMatch(query, merchantId) {
   const q = query.toLowerCase().trim();
+  const queryWords = q.split(/\s+/).filter((w) => w.length >= 2);
 
   const products = await prisma.product.findMany({
     where: { active: true, stock: { gt: 0 }, merchantId },
   });
 
-  const inStock = products.filter((p) => p.stock > 0);
-
-  const scored = inStock
+  const scored = products
     .map((p) => {
+      const name     = p.name.toLowerCase();
+      const sku      = p.sku.toLowerCase();
+      const category = p.category.toLowerCase();
+
       let score = 0;
-      if (p.sku.toLowerCase() === q)            score += 100;
-      if (p.name.toLowerCase() === q)           score += 80;
-      if (p.name.toLowerCase().includes(q))     score += 50;
-      if (p.sku.toLowerCase().includes(q))      score += 40;
-      if (p.category.toLowerCase().includes(q)) score += 20;
-      const words = q.split(/\s+/);
-      for (const word of words) {
-        if (word.length < 2) continue;
-        if (p.name.toLowerCase().includes(word))     score += 10;
-        if (p.category.toLowerCase().includes(word)) score += 5;
+      if      (sku === q)          score = 100;
+      else if (name === q)         score = 80;
+      else if (name.includes(q))   score = 50;
+      else if (sku.includes(q))    score = 40;
+      else if (category === q)     score = 25;
+
+      // Word-overlap fallback — only when none of the above (stronger,
+      // unambiguous) signals fired. Requires a clear majority of the
+      // query's words to actually appear in the product name — a single
+      // incidental word match (e.g. "laptop" inside "Laptop Backpack" when
+      // the buyer asked for a "gaming laptop") is exactly the false-positive
+      // this guards against; one shared word out of two is not confidence,
+      // it's coincidence.
+      if (score === 0 && queryWords.length > 0) {
+        const nameMatches = queryWords.filter((w) => name.includes(w)).length;
+        const matchRatio  = nameMatches / queryWords.length;
+        if (matchRatio >= 0.6) {
+          score = Math.round(30 * matchRatio);
+        }
       }
+
       return { product: p, score };
     })
-    .filter((s) => s.score > 0)
+    .filter((s) => s.score >= MINIMUM_SCORE)
     .sort((a, b) => b.score - a.score);
 
   if (scored.length === 0) return null;
@@ -73,4 +92,19 @@ async function decrementStock(sku, quantity, merchantId) {
   return result.count > 0;
 }
 
-module.exports = { getAllActiveProducts, findBestMatch, getProductBySku, decrementStock };
+/**
+ * Sets stock for a product to an absolute value (not a delta), scoped to
+ * the owning merchant. Used by the merchant dashboard's restock UI.
+ * Returns the updated product, or null if no matching row was found
+ * (wrong SKU, wrong merchant, or product doesn't exist).
+ */
+async function setStock(sku, merchantId, stock) {
+  const result = await prisma.product.updateMany({
+    where: { sku, merchantId },
+    data:  { stock },
+  });
+  if (result.count === 0) return null;
+  return prisma.product.findFirst({ where: { sku, merchantId } });
+}
+
+module.exports = { getAllActiveProducts, findBestMatch, getProductBySku, decrementStock, setStock };

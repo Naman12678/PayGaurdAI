@@ -11,6 +11,7 @@ const authRoute     = require('./routes/auth.route');
 const manifestRoute = require('./routes/manifest.route');
 const matchRoute    = require('./routes/match.route');
 const policyRoute   = require('./routes/policy.route');
+const catalogRoute  = require('./routes/catalog.route');
 const ordersRoute   = require('./routes/orders.route');
 const auditRoute    = require('./routes/audit.route');
 
@@ -85,6 +86,7 @@ app.use(authLimiter, authRoute);       // POST /auth/register  POST /auth/login 
 app.use(manifestRoute);                // GET /.well-known/agent-catalog.json  (requireAuth inside)
 app.use(matchRoute);                   // POST /match           (requireServiceToken + rate limit inside)
 app.use(policyRoute);                  // POST /policy/check, /audit/log (rate limit inside) · GET/PUT /policy (auth inside)
+app.use(catalogRoute);                 // PUT  /catalog/:sku    (requireAuth inside)
 app.use(ordersRoute);                  // POST /orders          (requireServiceToken + rate limit inside)
 app.use(auditRoute);                   // GET  /audit           (requireAuth inside)
 

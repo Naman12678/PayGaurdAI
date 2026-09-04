@@ -10,6 +10,7 @@ const SUGGESTIONS = [
   '2x USB-C cables please',
   'Buy me the 24-inch monitor',    // blocked by sku_allow_list
   'I want to buy the portable SSD', // blocked by max_order_amount
+  'I want to buy a gaming laptop',  // not in catalog — shows the no-match path
 ];
 
 const OUTCOME_STAMP = {

@@ -76,3 +76,7 @@ export async function updatePolicy(data) {
 export async function fetchCatalog() {
   return request('GET', '/.well-known/agent-catalog.json');
 }
+
+export async function restockProduct(sku, stock) {
+  return request('PUT', `/catalog/${encodeURIComponent(sku)}`, { stock });
+}
